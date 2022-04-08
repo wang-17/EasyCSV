@@ -14,5 +14,7 @@ public @interface CsvProperty {
      * Excel列的的标题
      * @return
      */
-    String value();
+    String value() default "";
+
+    int index() default -1;
 }

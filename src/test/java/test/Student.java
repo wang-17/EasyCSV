@@ -5,10 +5,10 @@ import lombok.Data;
 
 @Data
 public class Student {
-    @CsvProperty("no")
+    @CsvProperty( index = 0)
     String no;
-    @CsvProperty("name")
+    @CsvProperty(index = 1)
     String name;
-    @CsvProperty("age")
+    @CsvProperty(index = 2)
     int age;
 }

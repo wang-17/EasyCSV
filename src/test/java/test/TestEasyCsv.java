@@ -1,6 +1,5 @@
 package test;
 
-
 import com.xykj.easycsv.EasyCsv;
 import com.xykj.easycsv.entity.Rule;
 
@@ -26,7 +25,7 @@ public class TestEasyCsv {
      */
     public static void testDoRead(){
         new EasyCsv().doRead("C:\\Users\\it\\Documents\\WXWork\\1688857922266493\\Cache\\File\\2022-04\\住院三年.csv"
-                , PatientInfo.class,new PatientInfoListener());
+                ,PatientInfo.class,new PatientInfoListener());
     }
 
 

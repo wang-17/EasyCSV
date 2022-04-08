@@ -1,7 +1,5 @@
 package com.xykj.easycsv;
 
-
-
 import com.xykj.easycsv.entity.Rule;
 import com.xykj.easycsv.listener.CsvListener;
 import com.xykj.easycsv.listener.CsvToMapListener;
@@ -33,6 +31,7 @@ public class EasyCsv {
         this.rule = rule;
     }
 
+
     /**
      * 获取所有数据
      * @param fileName 文件路径
@@ -40,8 +39,24 @@ public class EasyCsv {
      * @param <T>
      * @return
      */
-    public  <T> List<T> readAll(String fileName, Class<T> classA) {
-        return read(fileName, classA,null);
+    public  <T> List<T> readAll(String fileName, Class<T> classA){
+        try {
+            return read(new FileInputStream(fileName), classA,null);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * 流方式读
+     * @param inputStream
+     * @param classA
+     * @param <T>
+     * @return
+     */
+    public  <T> List<T> readAll(InputStream inputStream, Class<T> classA) {
+        return read(inputStream, classA,null);
     }
 
 
@@ -53,8 +68,24 @@ public class EasyCsv {
      * @param <T>
      */
     public <T> void doRead(String fileName,Class<T> classA, CsvListener<T> csvListener) {
-        read(fileName,classA,csvListener);
+        try {
+            read(new FileInputStream(fileName),classA,csvListener);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
+
+    /**
+     * 流方式读
+     * @param inputStream
+     * @param classA
+     * @param csvListener
+     * @param <T>
+     */
+    public <T> void doRead(InputStream inputStream,Class<T> classA, CsvListener<T> csvListener) {
+        read(inputStream,classA,csvListener);
+    }
+
 
     /**
      * 以监听器的方式读取csv文件转为Map对象
@@ -87,11 +118,11 @@ public class EasyCsv {
                         csvListener.invokeHead(converter.getTitleIndexMap(),oneColumnStr);
                     }
                 }else {
-                        if (csvListener!=null){
-                            csvListener.invoke(converter.getMap(oneColumnStr),oneColumnStr);
-                        }else {
-                            result.add(converter.getMap(oneColumnStr));
-                        }
+                    if (csvListener!=null){
+                        csvListener.invoke(converter.getMap(oneColumnStr),oneColumnStr);
+                    }else {
+                        result.add(converter.getMap(oneColumnStr));
+                    }
                 }
                 i++;
             }
@@ -117,18 +148,20 @@ public class EasyCsv {
 
     /**
      * 读取csv的内部方法
-     * @param fileName
+     * @param inputStream
      * @param classA
      * @param csvListener
      * @param <T>
      * @return
      */
-    private <T> List<T> read(String fileName,Class<T> classA, CsvListener<T> csvListener) {
+    private <T> List<T> read(InputStream inputStream,Class<T> classA, CsvListener<T> csvListener) {
         BufferedReader reader = null;
         List<T> result = new ArrayList<>();
         try {
-            InputStream resourceAsStream = new FileInputStream(fileName);
-            reader = new BufferedReader(new InputStreamReader(resourceAsStream,getEncoding(fileName)));
+            final byte[] bytes = inputStream.readAllBytes();
+            inputStream.close();
+            InputStream resourceAsStream = new ByteArrayInputStream(bytes);
+            reader = new BufferedReader(new InputStreamReader(resourceAsStream,getEncoding(new ByteArrayInputStream(bytes))));
             String oneColumnStr;
             int i=0;
             Converter converter=new Converter(this.rule);
@@ -180,15 +213,26 @@ public class EasyCsv {
      * @param fileName
      * @return
      */
-    private static String getEncoding(String fileName)
-    {
+    private static String getEncoding(String fileName){
         File file=new File(fileName);
+        try {
+            InputStream is = new FileInputStream(file);
+            return getEncoding(is);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return "GBK";
+        }
+    }
+    private static String getEncoding(InputStream is) {
+
         String charset = "GBK";
         byte[] first3Bytes = new byte[3];
         try {
+            byte[] bytes = is.readAllBytes();
+
             boolean checked = false;
-            InputStream is = new FileInputStream(file);
-            int read = is.read(first3Bytes, 0, 3);
+
+            int read = new ByteArrayInputStream(bytes).read(first3Bytes, 0, 3);
 
             if (read == -1) {
                 return charset;
@@ -222,7 +266,7 @@ public class EasyCsv {
                 checked = true;
             }
             //bis.reset();
-            InputStream istmp = new FileInputStream(file);
+            InputStream istmp = new ByteArrayInputStream(bytes);
             if (!checked) {
                 int loc = 0;
                 while ((read = istmp.read()) != -1) {

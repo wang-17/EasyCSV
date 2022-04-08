@@ -44,6 +44,19 @@ public class Converter {
      */
     Map<String, String> titleFieldMap=null;
 
+    /**
+     * 属性-坐标实体类
+     */
+    Map<String,Integer> fieldIndexMap=null;
+
+    public Map<String, Integer> getFieldIndexMap() {
+        return fieldIndexMap;
+    }
+
+    public void setFieldIndexMap(Map<String, Integer> fieldIndexMap) {
+        this.fieldIndexMap = fieldIndexMap;
+    }
+
     public Map<String, Integer> getTitleIndexMap() {
         return titleIndexMap;
     }
@@ -67,16 +80,26 @@ public class Converter {
      * @return
      */
     public <T> Map<String,String> getTitleFieldMap(Class<T> a){
-        Map<String,String> exprMap=new HashMap<>();
+
         if (this.titleFieldMap!=null){
             return titleFieldMap;
         }
+        Map<String,Integer> fieldIndexMap=new HashMap<>();
+        Map<String,String> exprMap=new HashMap<>();
         for (Field field : a.getDeclaredFields()) {
             CsvProperty annotation = field.getAnnotation(CsvProperty.class);
-            String titleName = annotation.value();
+
             String name = field.getName();
-            exprMap.put(name,titleName);
+            int index = annotation.index();
+            if (index!=-1){
+                fieldIndexMap.put(name,index);
+            }
+            String titleName = annotation.value();
+            if (!"".equals(titleName)){
+                exprMap.put(name,titleName);
+            }
         }
+        this.fieldIndexMap=fieldIndexMap;
         this.titleFieldMap=exprMap;
         return exprMap;
     }
@@ -117,19 +140,38 @@ public class Converter {
             for (Method method : methods) {
                 if (!method.getName().contains("set")){continue;}
                 String fieldName = getFieldName(method);
+                //先通过索引注解查询
+                Integer index = this.fieldIndexMap.get(fieldName);
+                if (index!=null){
+                    String cellValue = cells[index];
+                    invoke(cellValue,method,result);
+                }
                 String title = titleFieldMap.get(fieldName);
                 if (title!=null){
                     String cellValue = getCellByTitle(title, cells);
-                    if (cellValue!=null){
-                        Class<?> parameterType = method.getParameterTypes()[0];
-                        Object value = parseValue(parameterType, cellValue);
-                        if (value!=null){
-                            method.invoke(result,value);
-                        }
-                    }
+                    invoke(cellValue,method,result);
                 }
             }
             return result;
+    }
+
+    /**
+     * 设置值
+     * @param cellValue
+     * @param method
+     * @param result
+     * @param <T>
+     * @throws InvocationTargetException
+     * @throws IllegalAccessException
+     */
+    public<T> void invoke(String cellValue,Method method,T result) throws InvocationTargetException, IllegalAccessException {
+        if (cellValue!=null){
+            Class<?> parameterType = method.getParameterTypes()[0];
+            Object value = parseValue(parameterType, cellValue);
+            if (value!=null){
+                method.invoke(result,value);
+            }
+        }
     }
 
     /**
