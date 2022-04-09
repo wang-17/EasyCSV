@@ -34,15 +34,14 @@ public class TestEasyCsv {
      */
     public static void testRule(){
 
-        Rule rule = new Rule("\"", "\"", ",");
-        final List<Student> students = new EasyCsv(rule).readAll("C:\\Users\\it\\Documents\\WXWork\\1688857922266493\\Cache\\File\\2022-04\\测试.csv"
+        final List<Student> students = new EasyCsv().readAll("C:\\Users\\it\\Documents\\WXWork\\1688857922266493\\Cache\\File\\2022-04\\测试.csv"
                 , Student.class);
         System.out.println(students);
     }
 
 
     public static void main(String[] args) {
-        testDoRead();
+        readAllTest();
     }
 
 

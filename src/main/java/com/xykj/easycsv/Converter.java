@@ -10,6 +10,7 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -88,7 +89,6 @@ public class Converter {
         Map<String,String> exprMap=new HashMap<>();
         for (Field field : a.getDeclaredFields()) {
             CsvProperty annotation = field.getAnnotation(CsvProperty.class);
-
             String name = field.getName();
             int index = annotation.index();
             if (index!=-1){
@@ -111,7 +111,7 @@ public class Converter {
      * @param <T>
      * @return
      */
-    public  <T> T getT(String str,Class<T> classA) throws InstantiationException, IllegalAccessException, InvocationTargetException {
+    public  <T> T getT(String str,Class<T> classA) throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         String[] cells = getStrList(str);
         final Map<String, String> titleFieldMap = getTitleFieldMap(classA);
         return getT(cells,classA,titleFieldMap);
@@ -134,25 +134,24 @@ public class Converter {
      * @param <T>
      * @return
      */
-    private  <T> T getT(String[] cells, Class<T> a,Map<String, String> titleFieldMap) throws InstantiationException, IllegalAccessException, InvocationTargetException {
-            T result = a.newInstance();
-            Method[] methods = a.getMethods();
-            for (Method method : methods) {
-                if (!method.getName().contains("set")){continue;}
-                String fieldName = getFieldName(method);
-                //先通过索引注解查询
-                Integer index = this.fieldIndexMap.get(fieldName);
-                if (index!=null){
-                    String cellValue = cells[index];
-                    invoke(cellValue,method,result);
-                }
-                String title = titleFieldMap.get(fieldName);
-                if (title!=null){
-                    String cellValue = getCellByTitle(title, cells);
-                    invoke(cellValue,method,result);
-                }
+    private  <T> T getT(String[] cells, Class<T> a,Map<String, String> titleFieldMap) throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+        T result = a.newInstance();
+        Field[] fields = result.getClass().getDeclaredFields();
+        for (Field field : fields) {
+            String fieldName = field.getName();
+            //先通过索引注解查询
+            Integer index = this.fieldIndexMap.get(fieldName);
+            if (index != null) {
+                String cellValue = cells[index];
+                invoke(cellValue, field, result);
             }
-            return result;
+            String title = titleFieldMap.get(fieldName);
+            if (title != null) {
+                String cellValue = getCellByTitle(title, cells);
+                invoke(cellValue, field, result);
+            }
+        }
+        return result;
     }
 
     /**
@@ -172,6 +171,25 @@ public class Converter {
                 method.invoke(result,value);
             }
         }
+    }
+
+    public<T> void invoke(String cellValue,Field field,T result) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+        if (cellValue!=null){
+            Class<?> parameterType = field.getType();
+            Method method = getMethodByFieldName(field, result);
+            Object value = parseValue(parameterType, cellValue);
+            if (value!=null){
+                method.invoke(result,value);
+            }
+        }
+    }
+
+    public<T> Method getMethodByFieldName(Field field,T result) throws NoSuchMethodException {
+        String fieldName=field.getName();
+        Character firstChar = fieldName.charAt(0);
+        fieldName = firstChar.toString().toUpperCase(Locale.ROOT) + fieldName.substring(1);
+        String methodName="set"+fieldName;
+        return result.getClass().getMethod(methodName,field.getType());
     }
 
     /**
@@ -197,20 +215,42 @@ public class Converter {
      */
     private String[] getStrList(String str){
         if (rule!=null){
-            if (split==null){
-                String startWith = rule.getStartWith();
-                String endWith = rule.getEndWith();
-                String split = rule.getSplit();
-                this.split=endWith + split + startWith;
-            }
-            String[] split1 = str.split(this.split);
-            String first = split1[0];
-            String last = split1[split1.length-1];
-            split1[0]=first.replaceFirst(rule.getStartWith(),"");
-            split1[split1.length-1]=last.substring(0,last.lastIndexOf(rule.getEndWith()));
-            return split1;
+            getStrListByRule(str);
         }
-        return str.split(",");
+        return getDefaultStrList(str);
+    }
+
+    public String[] getStrListByRule(String str){
+        if (split==null){
+            String startWith = "";
+            if (rule.getStartWith()!=null){
+                startWith=rule.getStartWith();
+            }
+            String endWith = "";
+            if (rule.getEndWith()!=null){
+                endWith=rule.getEndWith();
+            }
+            String split = rule.getSplit();
+            this.split=endWith + split + startWith;
+        }
+        String[] split1 = str.split(this.split);
+        String first = split1[0];
+        String last = split1[split1.length-1];
+        split1[0]=first.replaceFirst(rule.getStartWith(),"");
+        split1[split1.length-1]=last.substring(0,last.lastIndexOf(rule.getEndWith()));
+        return split1;
+    }
+
+    public String[] getDefaultStrList(String str){
+        String[] split = str.split(",");
+        for (int i = 0; i < split.length; i++) {
+            String s=split[i];
+            if ((s.indexOf("\"")==0)&&(s.lastIndexOf("\"")==(s.length()-1))){
+                s=s.substring(1,s.length()-2);
+            }
+            split[i]=s;
+        }
+        return split;
     }
 
     /**

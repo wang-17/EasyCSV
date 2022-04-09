@@ -107,7 +107,7 @@ public class EasyCsv {
         List<Map<Integer,String>>  result = new ArrayList<>();
         try {
             InputStream resourceAsStream = new FileInputStream(fileName);
-            reader = new BufferedReader(new InputStreamReader(resourceAsStream,getEncoding(fileName)));
+            reader = new BufferedReader(new InputStreamReader(resourceAsStream,"GBK"));
             String oneColumnStr;
             int i=0;
             Converter converter=new Converter(this.rule);
@@ -158,14 +158,12 @@ public class EasyCsv {
         BufferedReader reader = null;
         List<T> result = new ArrayList<>();
         try {
-            final byte[] bytes = inputStream.readAllBytes();
-            inputStream.close();
-            InputStream resourceAsStream = new ByteArrayInputStream(bytes);
-            reader = new BufferedReader(new InputStreamReader(resourceAsStream,getEncoding(new ByteArrayInputStream(bytes))));
+            reader = new BufferedReader(new InputStreamReader(inputStream,"GBK"));
             String oneColumnStr;
             int i=0;
             Converter converter=new Converter(this.rule);
             while ((oneColumnStr = reader.readLine()) != null) {
+                getEncoding(new ByteArrayInputStream(oneColumnStr.getBytes()));
                 if (i==0){
                     converter.setTitleIndexMap(oneColumnStr);
                     if (csvListener!=null){
@@ -186,7 +184,6 @@ public class EasyCsv {
                             result.add(classA.newInstance());
                         }
                     }
-
                 }
                 i++;
             }
@@ -210,29 +207,17 @@ public class EasyCsv {
 
     /**
      * 获取内容编码
-     * @param fileName
      * @return
      */
-    private static String getEncoding(String fileName){
-        File file=new File(fileName);
-        try {
-            InputStream is = new FileInputStream(file);
-            return getEncoding(is);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return "GBK";
-        }
-    }
-    private static String getEncoding(InputStream is) {
-
+    private static String getEncoding(ByteArrayInputStream  is) {
+        is.mark(0);
         String charset = "GBK";
         byte[] first3Bytes = new byte[3];
         try {
-            byte[] bytes = is.readAllBytes();
 
             boolean checked = false;
 
-            int read = new ByteArrayInputStream(bytes).read(first3Bytes, 0, 3);
+            int read = is.read(first3Bytes, 0, 3);
 
             if (read == -1) {
                 return charset;
@@ -265,11 +250,11 @@ public class EasyCsv {
                 charset = "windows-1251";
                 checked = true;
             }
-            //bis.reset();
-            InputStream istmp = new ByteArrayInputStream(bytes);
+            is.reset();
+            is.mark(0);
             if (!checked) {
                 int loc = 0;
-                while ((read = istmp.read()) != -1) {
+                while ((read = is.read()) != -1) {
                     loc++;
                     if (read >= 0xF0) {
                         break;
@@ -278,16 +263,16 @@ public class EasyCsv {
                         break;
                     }
                     if (0xC0 <= read && read <= 0xDF) {
-                        read = istmp.read();
+                        read = is.read();
                         if (0x80 <= read && read <= 0xBF) {
                             continue;
                         } else {
                             break;
                         }
                     } else if (0xE0 <= read && read <= 0xEF) {
-                        read = istmp.read();
+                        read = is.read();
                         if (0x80 <= read && read <= 0xBF) {
-                            read = istmp.read();
+                            read = is.read();
                             if (0x80 <= read && read <= 0xBF) {
                                 charset = "UTF-8";
                                 break;
@@ -300,8 +285,7 @@ public class EasyCsv {
                     }
                 }
             }
-            is.close();
-            istmp.close();
+            is.reset();
         } catch (Exception e) {
             e.printStackTrace();
         }
