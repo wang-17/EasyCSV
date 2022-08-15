@@ -177,6 +177,7 @@ public class EasyCsv {
                             result.add(converter.getT(oneColumnStr, classA));
                         }
                     }catch (Exception e){
+                        e.printStackTrace();
                         if (csvListener!=null){
                             csvListener.invoke(classA.newInstance(),oneColumnStr);
                             csvListener.onError(e,oneColumnStr);

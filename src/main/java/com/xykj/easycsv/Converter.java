@@ -8,10 +8,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 转化器
@@ -233,7 +230,7 @@ public class Converter {
             String split = rule.getSplit();
             this.split=endWith + split + startWith;
         }
-        String[] split1 = str.split(this.split);
+        String[] split1 = split(str,this.split);
         String first = split1[0];
         String last = split1[split1.length-1];
         split1[0]=first.replaceFirst(rule.getStartWith(),"");
@@ -241,8 +238,10 @@ public class Converter {
         return split1;
     }
 
+    //todo 这里字符串数组分割不对应
     public String[] getDefaultStrList(String str){
-        String[] split = str.split(",");
+//        String[] split = str.split(",");
+        String[] split = split(str,",");
         for (int i = 0; i < split.length; i++) {
             String s=split[i];
             if ((s.indexOf("\"")==0)&&(s.lastIndexOf("\"")==(s.length()-1))){
@@ -251,6 +250,34 @@ public class Converter {
             split[i]=s;
         }
         return split;
+    }
+
+    private static String[] split(String str,String regex){
+        List<String> cellList=new ArrayList<>();
+        int fromIndex=0;
+        int cellStartIndex=0;
+        while (cellStartIndex<=str.length()-1){
+            fromIndex = str.indexOf(regex, fromIndex);
+            if (fromIndex==-1){
+                fromIndex=str.length();
+            }
+            int cellEndIndex =fromIndex;
+            if (cellStartIndex==fromIndex){
+                cellList.add("");
+            }else {
+                cellList.add(str.substring(cellStartIndex,cellEndIndex));
+            }
+            fromIndex=fromIndex+regex.length();
+            cellStartIndex=fromIndex;
+        }
+        if (str.lastIndexOf(regex)+regex.length()==str.length()){
+            cellList.add("");
+        }
+        String [] result=new String[cellList.size()];
+        for (int i = 0; i < cellList.size(); i++) {
+            result[i]=cellList.get(i);
+        }
+        return result;
     }
 
     /**
