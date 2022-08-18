@@ -116,8 +116,9 @@ public class EasyCsv {
     private List<Map<Integer,String>> readToMap(String fileName, CsvToMapListener csvListener) {
         BufferedReader reader = null;
         List<Map<Integer,String>>  result = new ArrayList<>();
+        InputStream resourceAsStream=null;
         try {
-            InputStream resourceAsStream = new FileInputStream(fileName);
+            resourceAsStream = new FileInputStream(fileName);
             reader = new BufferedReader(new InputStreamReader(resourceAsStream,"GBK"));
             String oneColumnStr;
             int i=0;
@@ -146,9 +147,9 @@ public class EasyCsv {
         } finally {
             if (reader != null) {
                 try {
+                    resourceAsStream.close();
                     reader.close();
-                } catch (IOException e1) {
-                }
+                } catch (IOException e1) { }
             }
         }
         return result;
