@@ -2,6 +2,7 @@ package test;
 
 import com.xykj.easycsv.EasyCsv;
 import com.xykj.easycsv.entity.CsvProperty;
+import com.xykj.easycsv.entity.IgnoreField;
 import com.xykj.easycsv.entity.Rule;
 
 import java.util.List;
@@ -47,6 +48,8 @@ public class TestEasyCsv {
         private String name;
         @CsvProperty("年龄")
         private Integer age;
+        @IgnoreField
+        private Integer testFileld;
 
         public int getNo() {
             return no;
@@ -78,15 +81,20 @@ public class TestEasyCsv {
                     "no=" + no +
                     ", name='" + name + '\'' +
                     ", age=" + age +
+                    ", testFileld=" + testFileld +
                     '}';
         }
     }
 
 
     public static void main(String[] args) {
+        EasyCsv easyCsv = new EasyCsv();
         String path="C:\\Users\\DJ033019\\Desktop\\test.csv";
-        List<test.Student> students = new EasyCsv().readAll(path, test.Student.class);
+
+        String outPath="C:\\Users\\DJ033019\\Desktop\\temp\\out_test.csv";
+        List<Student> students =easyCsv.readAll(path, Student.class);
         System.out.println(students);
+        easyCsv.write(outPath,students);
     }
 
 

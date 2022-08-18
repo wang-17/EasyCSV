@@ -35,7 +35,7 @@ public class Converter {
     /**
      * 标题名-标题index
      */
-    private Map<String,Integer> titleIndexMap =new HashMap<>();
+    private Map<String,Integer> titleIndexMap =new LinkedHashMap<>();
 
     /**
      * 标题名-实体类属性名
@@ -82,10 +82,13 @@ public class Converter {
         if (this.titleFieldMap!=null){
             return titleFieldMap;
         }
-        Map<String,Integer> fieldIndexMap=new HashMap<>();
+        Map<String,Integer> fieldIndexMap=new LinkedHashMap<>();
         Map<String,String> exprMap=new HashMap<>();
         for (Field field : a.getDeclaredFields()) {
             CsvProperty annotation = field.getAnnotation(CsvProperty.class);
+            if (annotation==null){
+                continue;
+            }
             String name = field.getName();
             int index = annotation.index();
             if (index!=-1){
@@ -173,7 +176,7 @@ public class Converter {
     public<T> void invoke(String cellValue,Field field,T result) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
         if (cellValue!=null){
             Class<?> parameterType = field.getType();
-            Method method = getMethodByFieldName(field, result);
+            Method method = getSetMethodByFieldName(field, result);
             Object value = parseValue(parameterType, cellValue);
             if (value!=null){
                 method.invoke(result,value);
@@ -181,7 +184,7 @@ public class Converter {
         }
     }
 
-    public<T> Method getMethodByFieldName(Field field,T result) throws NoSuchMethodException {
+    public<T> Method getSetMethodByFieldName(Field field, T result) throws NoSuchMethodException {
         String fieldName=field.getName();
         Character firstChar = fieldName.charAt(0);
         fieldName = firstChar.toString().toUpperCase(Locale.ROOT) + fieldName.substring(1);
@@ -238,7 +241,6 @@ public class Converter {
         return split1;
     }
 
-    //todo 这里字符串数组分割不对应
     public String[] getDefaultStrList(String str){
 //        String[] split = str.split(",");
         String[] split = split(str,",");

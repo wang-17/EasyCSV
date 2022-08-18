@@ -33,6 +33,17 @@ public class EasyCsv {
 
 
     /**
+     * 生成CSV文件
+     * @param filePath
+     * @param dataList
+     * @param <T>
+     */
+    public <T> void write(String filePath,List<T> dataList){
+        new CsvWriter(this.rule).doWrite(filePath,dataList);
+    }
+
+
+    /**
      * 获取所有数据
      * @param fileName 文件路径
      * @param classA  实体类class 类型
