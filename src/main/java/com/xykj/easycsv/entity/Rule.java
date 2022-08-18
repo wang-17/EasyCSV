@@ -1,11 +1,8 @@
 package com.xykj.easycsv.entity;
 
-import lombok.extern.slf4j.Slf4j;
-
 /**
  * csv分割规则
  */
-@Slf4j
 public class Rule {
     /**
      * 开始符号
@@ -27,7 +24,7 @@ public class Rule {
         this.startWith = startWith;
         this.endWith = endWith;
         if (split==null||"".equals(split)){
-            log.error("分割符不能为空");
+            System.out.println("分割符不能为空");
         }
         this.split = split;
     }

@@ -2,7 +2,6 @@ package com.xykj.easycsv;
 
 import com.xykj.easycsv.entity.CsvProperty;
 import com.xykj.easycsv.entity.Rule;
-import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -13,7 +12,6 @@ import java.util.*;
 /**
  * 转化器
  */
-@Slf4j
 public class Converter {
 
     /**
@@ -305,7 +303,7 @@ public class Converter {
         try {
             if (parameterType.equals(BigDecimal.class)){
             }else if (cellValue==null){
-                log.info("一条空值");
+                System.out.println("一条空值");
             }else if (parameterType.equals(String.class)){
                 result=cellValue;
             }else if (parameterType.equals(Integer.class)|| "int".equals(parameterType.getName())){
@@ -324,7 +322,8 @@ public class Converter {
                 result=cellValue.charAt(0);
             }
         }catch (Exception e){
-            log.error("类型转换异常-无法将值‘"+cellValue+"’转换成‘"+parameterType+"’类型:{}",e);
+            System.out.println("类型转换异常-无法将值‘"+cellValue+"’转换成‘"+parameterType+"’类型");
+            e.printStackTrace();
         }
         return result;
     }

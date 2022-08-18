@@ -4,7 +4,6 @@ import com.xykj.easycsv.Converter;
 import com.xykj.easycsv.entity.CsvProperty;
 import com.xykj.easycsv.entity.IgnoreField;
 import com.xykj.easycsv.entity.Rule;
-import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -19,7 +18,6 @@ import java.util.stream.Collectors;
 /**
  * 写出工具
  */
-@Slf4j
 public class CsvWriter {
 
     private Rule rule;

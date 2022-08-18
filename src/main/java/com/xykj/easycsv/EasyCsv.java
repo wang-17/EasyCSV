@@ -3,14 +3,12 @@ package com.xykj.easycsv;
 import com.xykj.easycsv.entity.Rule;
 import com.xykj.easycsv.listener.CsvListener;
 import com.xykj.easycsv.listener.CsvToMapListener;
-import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-@Slf4j
 public class EasyCsv {
 
     private Rule rule;
