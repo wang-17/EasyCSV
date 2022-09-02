@@ -1,0 +1,19 @@
+
+_
+java:S2259<"DA "NullPointerException" could be thrown; "writer" is nullable here.(ÄËªŸÿÿÿÿÿ
+W	java:S899+"BDo something with the "boolean" value returned by "createNewFile".(´ÂÖÙ
+E
+java:S2093*"*Change this "try" to a try-with-resources.(¡»¢üùÿÿÿÿ
+B
+java:S3011W",This accessibility update should be removed.(˜ÂÓ˜
+m
+java:S3776k"RRefactor this method to reduce its Cognitive Complexity from 16 to the 15 allowed.(ªµØÅúÿÿÿÿ
+V
+java:S1854”":Remove this useless assignment to local variable "result".(ãÛ™üÿÿÿÿ
+W	java:S125†"<This block of commented-out lines of code should be removed.(¦†²¦ùÿÿÿÿ
+G
+java:S1481”"+Remove this unused "result" local variable.(ãÛ™üÿÿÿÿ
+H
+java:S1481•",Remove this unused "isFirst" local variable.(‰Î¡ïşÿÿÿÿ
+v
+java:S1128"TRemove this unnecessary import: same package classes are always implicitly imported.(¾ä˜şÿÿÿÿ8±¬ªşª0

@@ -1,0 +1,32 @@
+
+x
+java:S1488¡"\Immediately return this expression instead of assigning it to the temporary variable "name".(–Üğÿÿÿÿÿ
+W
+java:S1117S"ARename "fieldIndexMap" which hides the field declared at line 46.(‘ÿë 
+W
+java:S1117r"ARename "titleFieldMap" which hides the field declared at line 41.(üù˜À
+Q
+java:S1117ç":Rename "split" which hides the field declared at line 207.(¡¦ç¤
+Q
+java:S1117ô":Rename "split" which hides the field declared at line 207.(Ö’•
+R	java:S125ó"<This block of commented-out lines of code should be removed.(Ö¾³É
+i
+java:S3776¬"RRefactor this method to reduce its Cognitive Complexity from 18 to the 15 allowed.(°õıû
+W	java:S125­"<This block of commented-out lines of code should be removed.(¶Şšùıÿÿÿÿ
+?	java:S108°")Either remove or fill this block of code.(è²Ò¼
+O	java:S106²"9Replace this use of System.out or System.err by a logger.(¼Ãõ
+C
+java:S1872µ"'Use an "instanceof" comparison instead.(›°’ùÿÿÿÿ
+C
+java:S1872·"'Use an "instanceof" comparison instead.(½¯şÿÿÿÿ
+>
+java:S1872¹"'Use an "instanceof" comparison instead.(‰´ìÚ
+C
+java:S1872»"'Use an "instanceof" comparison instead.(ÓÎ‡°úÿÿÿÿ
+C
+java:S1872½"'Use an "instanceof" comparison instead.(ÉØÔ§úÿÿÿÿ
+=
+java:S1872¿"'Use an "instanceof" comparison instead.(’‡¬5
+C
+java:S1872Á"'Use an "instanceof" comparison instead.(Õë–˜øÿÿÿÿ
+O	java:S106Å"9Replace this use of System.out or System.err by a logger.(® ¥

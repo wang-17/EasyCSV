@@ -3,7 +3,6 @@ package test;
 import com.xykj.easycsv.EasyCsv;
 import com.xykj.easycsv.entity.CsvProperty;
 import com.xykj.easycsv.entity.IgnoreField;
-import com.xykj.easycsv.entity.Rule;
 
 import java.util.List;
 
@@ -26,8 +25,13 @@ public class TestEasyCsv {
      * 重写监听器的方式运行
      */
     public static void testDoRead(){
-        new EasyCsv().doRead("C:\\Users\\it\\Documents\\WXWork\\1688857922266493\\Cache\\File\\2022-04\\住院三年.csv"
-                ,PatientInfo.class,new PatientInfoListener());
+        //创建监听器实例
+        StudentListener studentListener = new StudentListener();
+        //执行监听器读方法
+        new EasyCsv().doRead("C:\\Users\\it\\Documents\\WXWork\\1688857922266493\\Cache\\File\\2022-04\\test.csv"
+                ,Student.class,studentListener);
+        //获取读到的数据
+        List<Student> dataList = studentListener.dataList;
     }
 
 
@@ -36,65 +40,30 @@ public class TestEasyCsv {
      */
     public static void testRule(){
 
-        final List<Student> students = new EasyCsv().readAll("C:\\Users\\it\\Documents\\WXWork\\1688857922266493\\Cache\\File\\2022-04\\测试.csv"
+        List<Student> students = new EasyCsv().readAll("C:\\Users\\it\\Documents\\WXWork\\1688857922266493\\Cache\\File\\2022-04\\测试.csv"
                 , Student.class);
         System.out.println(students);
     }
 
-    public static class Student{
-        @CsvProperty("学号")
-        private int no;
-        @CsvProperty("姓名")
-        private String name;
-        @CsvProperty("年龄")
-        private Integer age;
-        @IgnoreField
-        private Integer testFileld;
 
-        public int getNo() {
-            return no;
-        }
-
-        public void setNo(int no) {
-            this.no = no;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public Integer getAge() {
-            return age;
-        }
-
-        public void setAge(Integer age) {
-            this.age = age;
-        }
-
-        @Override
-        public String toString() {
-            return "Student{" +
-                    "no=" + no +
-                    ", name='" + name + '\'' +
-                    ", age=" + age +
-                    ", testFileld=" + testFileld +
-                    '}';
-        }
+    /**
+     * 写CSV测试方法
+     * @param students 即将写入的数据列表
+     */
+    public void testWrite(List<Student> students){
+        String outPath="C:\\Users\\DJ033019\\Desktop\\temp\\out_test.csv";
+        new EasyCsv().write(outPath,students);
     }
 
 
     public static void main(String[] args) {
         EasyCsv easyCsv = new EasyCsv();
         String path="C:\\Users\\DJ033019\\Desktop\\test.csv";
-
         String outPath="C:\\Users\\DJ033019\\Desktop\\temp\\out_test.csv";
         List<Student> students =easyCsv.readAll(path, Student.class);
         System.out.println(students);
         easyCsv.write(outPath,students);
+
     }
 
 

@@ -1,0 +1,30 @@
+
+]
+java:S1192ö"FDefine a constant instead of duplicating this literal "UTF-8" 3 times.(‘şÿ“
+o	java:S135Œ"YReduce the total number of break and continue statements in this loop to use at most one.(ÀÁ±Ä
+Q
+java:S1141·"5Extract this nested try block into a separate method.(¡»¢üùÿÿÿÿ
+h
+java:S2095w"MUse try-with-resources or close this "FileInputStream" in a "finally" clause.(û¹Şéÿÿÿÿÿ
+n
+java:S2095x"LUse try-with-resources or close this "BufferedReader" in a "finally" clause.(ò°³Şüÿÿÿÿ8µüª0
+A
+java:S11688"+Return an empty collection instead of null.(¥¹ï
+m
+java:S3776r"RRefactor this method to reduce its Cognitive Complexity from 16 to the 15 allowed.(˜ü¢ûÿÿÿÿ
+D	java:S108–")Either remove or fill this block of code.(¹±ùúşÿÿÿÿ
+E
+java:S2093v"*Change this "try" to a try-with-resources.(¡»¢üùÿÿÿÿ
+n
+java:S3776§"RRefactor this method to reduce its Cognitive Complexity from 24 to the 15 allowed.(‚İë¿ùÿÿÿÿ
+?	java:S108Ó")Either remove or fill this block of code.(ŸäÁ‚
+F
+java:S2093ª"*Change this "try" to a try-with-resources.(¡»¢üùÿÿÿÿ
+i
+java:S3776ß"RRefactor this method to reduce its Cognitive Complexity from 49 to the 15 allowed.(ÌŒ“­
+2
+java:S3626—"Remove this redundant jump.(ÉŠ©ƒ
+d
+java:S1871ú"MThis branch's code block is the same as the block for the branch on line 245.(ø»Á‚
+D
+java:S1481‹"(Remove this unused "loc" local variable.(Å…éøşÿÿÿÿ
